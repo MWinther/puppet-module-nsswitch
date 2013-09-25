@@ -1,28 +1,28 @@
-# == Class: nsswitch
-#
-# This module manages nsswitch.
-#
 class nsswitch (
-  $config_file    = '/etc/nsswitch.conf',
-  $ensure_ldap    = 'absent',
-  $ensure_vas     = 'absent',
-  $vas_nss_module = 'vas4',
+  $data       = undef,
+  $merge_hash = false,
 ) {
 
-  validate_absolute_path($config_file)
-  validate_re($ensure_ldap, '^(present|absent)$',
-    'Valid values for ensure_ldap are \'absent\' and \'present\'.')
-  validate_re($ensure_vas, '^(present|absent)$',
-    'Valid values for ensure_vas are \'absent\' and \'present\'.')
-  validate_re($vas_nss_module, '^vas(3|4)$',
-    'Valid values for vas_nss_module are \'vas3\' and \'vas4\'.')
+  if $data == undef {
+    fail('No configuration has been supplied.')
+  }
 
-  file { 'nsswitch_config_file':
+  if $merge_hash == true or $merge_hash == 'true' {
+    $nsswitch_data = hiera_hash('nsswitch::data')
+  } else {
+    $nsswitch_data = $data
+  }
+
+  file { '/etc/nsswitch.conf':
     ensure  => file,
-    path    => $config_file,
-    content => template('nsswitch/nsswitch.conf.erb'),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
+    content => template('nsswitch/nsswitch.conf.erb'),
   }
+
+  if $::kernel == 'SunOS' {
+    include nsswitch::solaris
+  }
+
 }

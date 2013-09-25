@@ -1,22 +1,8 @@
 # This file is being maintained by Puppet.
 # DO NOT EDIT
 
-passwd:     files<% if @ensure_ldap == 'present' %> ldap<% end %><% if @ensure_vas == 'present' %> <%= vas_nss_module %><% end %>
-shadow:     files<% if @ensure_ldap == 'present' %> ldap<% end %>
-group:      files<% if @ensure_ldap == 'present' %> ldap<% end %><% if @ensure_vas == 'present' %> <%= vas_nss_module %><% end %>
-
-sudoers:    files<% if @ensure_ldap == 'present' %> ldap<% end %>
-
-hosts:      files dns
-
-bootparams: files
-ethers:     files
-netmasks:   files
-networks:   files
-protocols:  files<% if @ensure_ldap == 'present' %> ldap<% end %>
-rpc:        files
-services:   files<% if @ensure_ldap == 'present' %> ldap<% end %>
-netgroup:   files<% if @ensure_ldap == 'present' %> ldap<% end %><% if @ensure_vas == 'present' %> nis<% end %>
-publickey:  files
-automount:  files<% if @ensure_ldap == 'present' %> ldap<% end %><% if @ensure_vas == 'present' %> nis<% end %>
-aliases:    files
+<% nsswitch_data.sort.each do |database, sources| -%>
+<% if sources != "-" -%>
+<%= database %>: <%= sources %>
+<% end -%>
+<% end -%>
