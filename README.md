@@ -1,32 +1,28 @@
-# ghoneycutt/nsswitch #
+# puppet-module-nsswitch #
 
-[![Build Status](
-https://api.travis-ci.org/ghoneycutt/puppet-module-nsswitch.png?branch=master)](https://travis-ci.org/ghoneycutt/puppet-module-nsswitch)
+Puppet module to manage nsswitch.conf
 
-Puppet module to manage nsswitch that optionally allows for LDAP and VAS integration.
+# Compability #
 
-===
-
-# Compatibility #
-  * EL 5
-  * EL 6
-
-===
+* EL 5/6
+* Suse 10, 11
+* Solaris 9, 10, 11
 
 # Parameters #
-[*config_file*]
-Path to configuration file.
-- *Default*: `/etc/nsswitch.conf`
 
-[*ensure_ldap*]
-Should LDAP be used? Valid values are 'absent' and 'present'
-- *Default*: 'absent'
+data
+----
+A hash containing each of the lines in nsswitch.conf.
 
-[*ensure_vas*]
-Should VAS (Quest Authentication Services) be used? Valid values are 'absent'
-and 'present'.
-- *Default*: 'absent'
+Example:
+{
+  'passwd' => 'files nis',
+  'group'  => 'files nis',
+  'hosts'  => 'files dns',
+}
 
-[*vas_nss_module*]
-Name of NSS module to use for VAS.
-- *Default*: 'vas4'
+merge_hash
+----------
+Boolean value. Specifies wheter the module should use the hiera_hash method to allow overriding specific values for a host in hiera. The data will still be loaded from nsswitch::data.
+
+- *Defualt*: False
